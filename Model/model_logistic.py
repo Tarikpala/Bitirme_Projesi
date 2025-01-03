@@ -3,6 +3,7 @@ from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
+from sklearn.preprocessing import StandardScaler
 import numpy as np
 import joblib
 
@@ -15,8 +16,7 @@ ortalama_harcama = data['Total Spending'].mean()
 data['Hedef'] = (data['Total Spending'] > ortalama_harcama).astype(int)
 
 # Özellikler ve hedef
-X = data.drop(columns=['Hedef', 'Invoice', 'Description', 'InvoiceDate', 'Country',
-                       'Days_Since_Last_Purchase', 'Weekday', 'Frequency', 'Country_Code'])
+X = data.drop(columns=['Hedef', 'Invoice', 'Description', 'InvoiceDate', 'Country','Days_Since_Last_Purchase', 'Weekday', 'Frequency', 'Country_Code','Customer ID', 'Total Spending', 'Month', 'Recent_Spending'])
 y = data['Hedef']
 
 # Eğitim ve test verisi ayırma
@@ -26,8 +26,13 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 smote = SMOTE(random_state=42)
 X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
 
-# Logistic Regression Modeli
-model = LogisticRegression(random_state=42, max_iter=1000)
+# Normalizasyon işlemi
+scaler = StandardScaler()
+X_train_smote = scaler.fit_transform(X_train_smote)
+X_test_scaled = scaler.transform(X_test)  # Test seti için aynı scaler
+
+# Logistic Regression Modeli (Sınıf ağırlıkları eklendi)
+model = LogisticRegression(random_state=42, max_iter=1000, class_weight='balanced')
 model.fit(X_train_smote, y_train_smote)
 
 # Cross-validation ile doğruluk kontrolü

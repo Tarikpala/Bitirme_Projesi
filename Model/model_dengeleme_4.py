@@ -15,8 +15,14 @@ data = pd.read_csv(veri_dosyasi)
 ortalama_harcama = data['Total Spending'].mean()
 data['Hedef'] = (data['Total Spending'] > ortalama_harcama).astype(int)
 
+# Spending Ratio üretimi
+data['Spending_Ratio'] = data.apply(
+    lambda row: row['Avg_Spending'] / row['Total Spending'] if row['Total Spending'] != 0 else 0,
+    axis=1
+)
+
 # Özellikler ve hedef
-X = data.drop(columns=['Hedef', 'Invoice', 'Description', 'InvoiceDate', 'Country','Country_Code', 'Customer ID', 'Month', 'Weekday', 'Frequency']) # Gereksiz sütunları kaldırıyoruz
+X = data.drop(columns=['Hedef', 'Invoice', 'Description', 'InvoiceDate', 'Country','Country_Code', 'Customer ID', 'Month', 'Weekday', 'Frequency', 'Total Spending' , 'Avg_Spending']) # Gereksiz sütunları kaldırıyoruz
 y = data['Hedef']
 
 # Eğitim ve test verisi ayırma
@@ -77,7 +83,7 @@ print("\nÖzellik Önem Sırası:")
 print(ozellik_onemi)
 
 # Özellik önemini CSV dosyasına kaydet
-ozellik_onemi.to_csv("Analiz/ozellik_onem_sirasi.csv", index=False)
+ozellik_onemi.to_csv("Analiz/ozellik_onem_sirasi_model4.csv", index=False)
 
 # Test verisi ile tahmin yap
 y_pred = best_model.predict(X_test_scaled)
@@ -87,8 +93,8 @@ print("Sınıflandırma Raporu:")
 print(classification_report(y_test, y_pred))
 
 # En iyi modeli kaydet
-joblib.dump(best_model, "Model/egitimli_model_gradient_tuned.pkl")
+joblib.dump(best_model, "Model/egitimli_model_gradient_model4.pkl")
 
 # Sınıflandırma raporunu kaydet
 rapor = classification_report(y_test, y_pred, output_dict=True)
-pd.DataFrame(rapor).transpose().to_csv("Analiz/siniflandirma_raporu_gradient.csv", index=False)
+pd.DataFrame(rapor).transpose().to_csv("Analiz/siniflandirma_raporu_model4.csv", index=False)

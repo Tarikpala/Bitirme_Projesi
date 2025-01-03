@@ -16,7 +16,7 @@ ortalama_harcama = data['Total Spending'].mean()
 data['Hedef'] = (data['Total Spending'] > ortalama_harcama).astype(int)
 
 # Özellikler ve hedef
-X = data.drop(columns=['Hedef', 'Invoice', 'Description', 'InvoiceDate', 'Country','Country_Code', 'Customer ID', 'Month', 'Weekday', 'Frequency']) # Gereksiz sütunları kaldırıyoruz
+X = data.drop(columns=['Hedef', 'Invoice', 'Description', 'InvoiceDate', 'Country','Country_Code', 'Customer ID', 'Month', 'Weekday', 'Frequency', 'Avg_Spending']) # Gereksiz sütunları kaldırıyoruz
 y = data['Hedef']
 
 # Eğitim ve test verisi ayırma
