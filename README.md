@@ -1,4 +1,4 @@
-# Bitirme Projesi: Müşteri Davranışları Analizi ve Tahmini
+# Bitirme Projesi: Müşteri Davranışları Analizi ve Tahmini ve Müşteri Kaybı Tahmin Modeli
 
 ## Proje İçeriği
 - **Veri Analizi**: Müşteri davranışlarının analiz edilmesi.
