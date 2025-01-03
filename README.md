@@ -25,7 +25,20 @@ Klasörler tüm çalışmalarımı içerse de ana dosyalar
 
 Veri/ veri_analizi.py
 Veri/ veri_temizleme.py
-
 Model/ model_egitimi.py olarak şekillenmiştir.
 
 Dosya sadeleştirmesi ve dosya karmaşasını dana açıklanır hale getirme adımları tam olarak tamamlanamamıştır. Dosyalar en kısa süre içinde daha anlaşılır ve adımları anlaşılır şekilde düzenlenecektir.
+
+Model Performans Sonuçları kontrollerimde
+
+Performans Metrikleri:
+Accuracy: %94
+Precision (Sınıf 1): %78
+Recall (Sınıf 1): %98
+F1-Score (Sınıf 1): %87
+Özellik Önemi:
+En önemli özellikler:
+Quantity (%66.3)
+Price (%33.7)
+
+şeklinde gerçekleşmiştir.
