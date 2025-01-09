@@ -6,6 +6,8 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import classification_report
 import numpy as np
 import joblib
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Veri setini yükle
 veri_dosyasi = "Veri/temizlenmis_online_retail_II.csv"
@@ -15,27 +17,32 @@ data = pd.read_csv(veri_dosyasi)
 ortalama_harcama = data['Total Spending'].mean()
 data['Hedef'] = (data['Total Spending'] > ortalama_harcama).astype(int)
 
-# Özellikler ve hedef
-X = data.drop(columns=['Hedef', 'Invoice', 'Description', 'InvoiceDate', 'Country','Country_Code', 'Customer ID', 'Month', 'Weekday', 'Frequency', 'Total Spending' , 'Avg_Spending']) # Gereksiz sütunları kaldırıyoruz
+# Bazı sütunları model performasına nitelikli bir etki yapmadığı veya overfit (fazla öğrenim ve dengesizlik) yaptığı için çıkarıyoruz.
+cikarilan_sutunlar = [
+    'Hedef', 'Invoice', 'Description', 'InvoiceDate', 'Country',
+    'Country_Code', 'Customer ID', 'Month', 'Weekday', 'Frequency',
+    'Total Spending', 'Avg_Spending'
+]
+X = data.drop(columns=cikarilan_sutunlar)
 y = data['Hedef']
 
-# Eğitim ve test verisi ayırma
+# Eğitim ve test verisi ayırıyoruz
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# SMOTE ile dengeleme
+# SMOTE kullanarak veriyi dengeliyoruz
 smote = SMOTE(random_state=42)
 X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
 
-# SMOTE sonrası boyutları kontrol et
+# SMOTE sonrası boyutları kontrol ediyoruz
 print(f"SMOTE sonrası eğitim veri boyutları: {X_train_smote.shape}, {y_train_smote.shape}")
 print(f"Test veri boyutları: {X_test.shape}, {y_test.shape}")
 
-# Özelliklerin ölçeklendirilmesi
+# Özelliklerin ölçeklendiriyoruz
 scaler = StandardScaler()
 X_train_smote = scaler.fit_transform(X_train_smote)
 X_test_scaled = scaler.transform(X_test)
 
-# Hiperparametre arama
+# Hiperparametre araması ile modelin öğrenme düzeyini ayarlıyor, overfit olmasını engelleyip dengeli hale gelmesini sağlıyoruz
 param_grid = {
     'n_estimators': [100],
     'learning_rate': [0.01],
@@ -50,7 +57,7 @@ grid_search = GridSearchCV(
     cv=2,
     scoring='accuracy',
     verbose=1,
-    n_jobs=-1  # Tüm çekirdekleri kullan
+    n_jobs=-1  # Daha hızlı model eğitimi için bilgisayarın tüm çekirdekleri kullanıyoruz
 )
 
 grid_search.fit(X_train_smote, y_train_smote)
@@ -75,6 +82,14 @@ ozellik_onemi = pd.DataFrame({
 # Özellik önemini yazdır
 print("\nÖzellik Önem Sırası:")
 print(ozellik_onemi)
+
+# Özellik önemini görselleştirme
+plt.figure(figsize=(10, 6))
+sns.barplot(x='Onem', y='Ozellik', data=ozellik_onemi)
+plt.title("Özellik Önem Sırası")
+plt.xlabel("Önem Skoru")
+plt.ylabel("Özellikler")
+plt.show()
 
 # Özellik önemini CSV dosyasına kaydet
 ozellik_onem_dosyasi = "Analiz/ozellik_onem_sirasi.csv"
