@@ -15,6 +15,8 @@
 2. Modeli eğitmek için: `python Model/model_egitimi.py`
 3. Çıktıları `Analiz/` klasöründe bulabilirsiniz.
 
+Bir kaç model denense de, en çok harcayanın (Total_spending) daha az müşteri kaybı yapacağını varsayarak model_egitimi.py şekillendirilmiştir. musteri_analizi.py içerisinde 90 günlük süre zarfında dönmeyenleri müşteri kaybı (churn) olarak belirleyecek bir analiz yapılsa da bu doğrudan model_egitimine şimdilik entegre edilmemiştir.
+
 Dosyalama konusunda şimdilik bir sadeleşmeye gidilememiştir. Tüm çalışma bir çok dosya açılarak gerçekleştirilmiştir. Farklı denemeler ve geliştirmeler yapılmıştır.
 Özellikle Total Spending ve Average Spending verilerinin modeli overfitting yapması yani fazla öğretmesi dolayısıyla dengesizleştiği görülmüş ancak bu verilerden bir süre vazgeçilmek
 istenmeyip bu konuda denemeler yapılmıştır. Ancak parametre ayarlamaları yapılmasına rağmen ve daha öncesinde de lojistik regresyon gibi nispeten daha az duyarlı bir modelde bile overfit olduğu gözlemlendiği
