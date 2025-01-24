@@ -27,6 +27,9 @@ data.dropna(subset=['Description', 'Customer ID'], inplace=True)
 # Negatif miktar ve fiyat değerlerini temizle
 data = data[(data['Quantity'] > 0) & (data['Price'] > 0)]
 
+# Cancelled işlemleri sütunu ekle (Rfm'de hariç, Churn'de dahil tutucaz)
+data['Cancelled'] = data['Invoice'].astype(str).str.contains('C', na=False)
+
 # Gereksiz sütunları kaldır
 data = data.drop(columns=['StockCode'])
 
@@ -47,9 +50,9 @@ data['Total Spending'] = data['Quantity'] * data['Price']
 data['Frequency'] = data.groupby('Customer ID')['Invoice'].transform('count')
 data['Avg_Spending'] = data['Total Spending'] / data['Frequency']
 
-# 4. Son 3 ay içinde yapılan harcama
-last_3_months = reference_date - pd.Timedelta(days=90)
-recent_spending = data[data['InvoiceDate'] >= last_3_months]
+# 4. Son 6 ay içinde yapılan harcama
+last_6_months = reference_date - pd.Timedelta(days=180)
+recent_spending = data[data['InvoiceDate'] >= last_6_months]
 data['Recent_Spending'] = data['Customer ID'].map(
     recent_spending.groupby('Customer ID')['Total Spending'].sum()
 )
